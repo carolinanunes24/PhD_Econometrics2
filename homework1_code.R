@@ -2,10 +2,10 @@ library(tidyverse)
 library(stargazer)
 library(data.table)
 
-data = data.table(female = ifelse(runif(50000)>=0.5,1,0))
-data[,ability := rnorm(50000)]
+data = data.table(female = ifelse(runif(50000) >= 0.5, 1, 0))
+data[,ability := runif(50000, 0, 1)]
 data[,discrimination := female]
-data[,occupation := 0.5 + 3*ability + 1*female - 5*discrimination + rnorm(50000)]
+data[,occupation := rbinom(50000, 1, (data$female + data$ability)/2)]
 data[,earnings := 0.5 - 5*discrimination + 2*occupation + 4*ability + rnorm(50000)]
 
 reg_1 = lm(earnings ~ discrimination, data)
