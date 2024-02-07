@@ -31,4 +31,3 @@ stargazer(reg_1,reg_2,reg_3, type = "text",
           column.labels = c("Direct causal effect", 
                             "Controlling only for collider O",
                             "Controlling for both A and O"))
-
