@@ -112,6 +112,7 @@ rm(list = ls())
 
 #	Load required packages.
 library("haven")
+library("ivreg")
 
 #	Set the working directory.
 setwd("C:/Users/frits/Documents/MLitt/ECON50580 PhD Econometrics 2/PhD_Econometrics2")
@@ -122,5 +123,8 @@ data <- read_dta("assign2.dta")
 #	Question 3.
 
 #	Sub-question A.
-reg <- lm(schooling ~ logearn + age + I(age^2) + I(age^3) + I(age^4) + yob + I(yob^2) + I(yob^3) + I(yob^4), data)
-reg <- summary(reg)
+reg.ols <- lm(logearn ~schooling + age + I(age^2) + I(age^3) + I(age^4) + yob + I(yob^2) + I(yob^3) + I(yob^4), data)
+reg.ols <- summary(reg.ols)
+
+#	Sub-question D.
+
