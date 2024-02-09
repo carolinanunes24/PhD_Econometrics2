@@ -111,8 +111,7 @@ legend("topleft",
 rm(list = ls())
 
 #	Load required packages.
-library("haven")
-library("ivreg")
+library("AER")
 
 #	Set the working directory.
 setwd("C:/Users/frits/Documents/MLitt/ECON50580 PhD Econometrics 2/PhD_Econometrics2")
@@ -123,8 +122,48 @@ data <- read_dta("assign2.dta")
 #	Question 3.
 
 #	Sub-question A.
-reg.ols <- lm(logearn ~schooling + age + I(age^2) + I(age^3) + I(age^4) + yob + I(yob^2) + I(yob^3) + I(yob^4), data)
+reg.ols <- lm(logearn ~ schooling + age + I(age^2) + I(age^3) + I(age^4) + yob + I(yob^2) + I(yob^3) + I(yob^4), data)
 reg.ols <- summary(reg.ols)
 
+#	Sub-question C.
+data$leave15 <- 0
+data[data$schooling < 15, "leave15"] <- 1
+probability.leaving.school <- c()
+for (i in 21:45) {
+	probability.leaving.school <- append(probability.leaving.school, 
+						sum(data[data$yob == i,]$leave15) / dim(data[data$yob == i,])[1])
+}
+probability.leaving.school <- data.frame("yob" = 21:45, "probability" = probability.leaving.school)
+
+plot(probability.leaving.school$yob, probability.leaving.school$probability,
+	main = "Probability of leaving school before the age of 15 by year of birth",
+	xlab = "Year of birth", ylab = "Probability")
+abline(v = 33)
+
+bins <- cut(data$yob, breaks = 21:45)
+plot.bins.yob <- aggregate(cbind(data$yob, data$schooling) ~ bins, FUN = mean)
+plot(plot.bins.yob$V1, plot.bins.yob$V2,
+	main = "Average years of schooling by year of birth",
+	xlab = "Year of birth", ylab = "Average years of schooling")
+abline(v = 33)
+
+bins <- cut(data$yob, breaks = 21:45)
+plot.bins.yob <- aggregate(cbind(data$yob, data$logearn) ~ bins, FUN = mean)
+plot(plot.bins.yob$V1, plot.bins.yob$V2,
+	main = "Average log of earnings by year of birth",
+	xlab = "Year of birth", ylab = "Average years of schooling")
+abline(v = 33)
+
 #	Sub-question D.
+data$yob33 <- 0
+data[data$yob < 33, "yob33"] <- 1
+reg.2sls <- ivreg(logearn ~ schooling | yob33, data = data)
+reg.2sls <- summary(reg.2sls)
+
+conditional.mean.Y.Z1 <- mean(data[data$yob33 == 1,]$logearn)
+conditional.mean.Y.Z0 <- mean(data[data$yob33 == 0,]$logearn)
+conditional.mean.D.Z1 <- mean(data[data$yob33 == 1,]$schooling)
+conditional.mean.D.Z0 <- mean(data[data$yob33 == 0,]$schooling)
+
+wald.estimator <- (conditional.mean.Y.Z1 - conditional.mean.Y.Z0) / (conditional.mean.D.Z1 - conditional.mean.D.Z0)
 
