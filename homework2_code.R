@@ -112,6 +112,7 @@ rm(list = ls())
 
 #	Load required packages.
 library("AER")
+library("haven")
 
 #	Set the working directory.
 setwd("C:/Users/frits/Documents/MLitt/ECON50580 PhD Econometrics 2/PhD_Econometrics2")
