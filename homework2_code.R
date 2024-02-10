@@ -168,3 +168,6 @@ conditional.mean.D.Z0 <- mean(data[data$yob33 == 0,]$schooling)
 
 wald.estimator <- (conditional.mean.Y.Z1 - conditional.mean.Y.Z0) / (conditional.mean.D.Z1 - conditional.mean.D.Z0)
 
+#	Additional material for question 3.
+first.stage <- summary(lm(schooling ~ yob33, data))
+correlation.zx <- cor(data$schooling, data$yob33, method = "pearson")
