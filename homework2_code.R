@@ -151,7 +151,7 @@ bins <- cut(data$yob, breaks = 21:45)
 plot.bins.yob <- aggregate(cbind(data$yob, data$logearn) ~ bins, FUN = mean)
 plot(plot.bins.yob$V1, plot.bins.yob$V2,
 	main = "Average log of earnings by year of birth",
-	xlab = "Year of birth", ylab = "Average years of schooling")
+	xlab = "Year of birth", ylab = "Average log of earnings")
 abline(v = 33)
 
 #	Sub-question D.
