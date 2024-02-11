@@ -10,7 +10,7 @@ library("MASS")
 #	Question 2.
 #	Setting parameters.
 gamma0 <- 0
-gamma1 <- 0.25
+gamma1 <- 1
 alpha <- 0
 beta <- 0.75
 mean.vector.xez <- c(3, 0, 2)
@@ -30,7 +30,7 @@ for (n in c(50, 100, 250, 1000)) {
 		epsilon <- df[,2]
 		z <- df[,3]
 		y <- alpha + beta * x + epsilon
-		u <- x - gamma0 + gamma1 * z
+		u <- x - (gamma0 + gamma1 * z)
 		cor.zx <- append(cor.zx, cor(z, x, method = "pearson"))
 		cor.xe <- append(cor.xe, cor(x, epsilon, method = "pearson"))
 		cor.ze <- append(cor.ze, cor(z, epsilon, method = "pearson"))
@@ -75,7 +75,7 @@ for (n in c(50, 100, 250, 1000)) {
 		epsilon <- df[,2]
 		z <- df[,3]
 		y <- alpha + beta * x + epsilon
-		u <- x - gamma0 + gamma1 * z
+		u <- x - (gamma0 + gamma1 * z)
 		cor.zx <- append(cor.zx, cor(z, x, method = "pearson"))
 		cor.xe <- append(cor.xe, cor(x, epsilon, method = "pearson"))
 		cor.ze <- append(cor.ze, cor(z, epsilon, method = "pearson"))
