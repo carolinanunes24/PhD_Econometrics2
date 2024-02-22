@@ -19,7 +19,7 @@ U.D <- runif(n)
 U.0i <- 1.5 * (U.D - 0.5) - U.D^2 + epsilon.i
 U.1i <- -0.5 * (U.D - 0.5) + U.D^2 + epsilon.i
 
-v.i <- 1/U.D
+v.i <- min(U.D) + (max(U.D) - min(U.D)) * U.D
 D.star.i <- pi.0 + pi.1 * Z.star.i + pi.2 * X.i + v.i
 
 Y.0i <- U.0i + beta.0 * X.i + theta * X.i^2
@@ -36,8 +36,8 @@ treated.propensity.score <- propensity.score[D.i == 1]
 untreated.propensity.score <- propensity.score[D.i == 0]
 histogram.treated <- hist(treated.propensity.score)
 histogram.untreated <- hist(untreated.propensity.score)
-plot(histogram.treated, col = 'blue')
-plot(histogram.untreated, add = TRUE, col = 'red')
+plot(histogram.treated, col = rgb(0, 0, 1, 0.5))
+plot(histogram.untreated, add = TRUE, col = rgb(1, 0, 0, 0.5))
 
 
 #	Question 2.2
@@ -51,7 +51,7 @@ for (i in 1:25) {
 	U.0i <- 1.5 * (U.D - 0.5) - U.D^2 + epsilon.i
 	U.1i <- -0.5 * (U.D - 0.5) + U.D^2 + epsilon.i
 	
-	v.i <- 1/U.D
+	v.i <- min(U.D) + (max(U.D) - min(U.D)) * U.D
 	D.star.i <- pi.0 + pi.1 * Z.star.i + pi.2 * X.i + v.i
 	
 	Y.0i <- U.0i + beta.0 * X.i + theta * X.i^2
@@ -104,7 +104,7 @@ for (i in 1:25) {
 	U.0i <- 1.5 * (U.D - 0.5) - U.D^2 + epsilon.i
 	U.1i <- -0.5 * (U.D - 0.5) + U.D^2 + epsilon.i
 	
-	v.i <- 1/U.D
+	v.i <- min(U.D) + (max(U.D) - min(U.D)) * U.D
 	D.star.i <- pi.0 + pi.1 * Z.star.i + pi.2 * X.i + v.i
 	
 	Y.0i <- U.0i + beta.0 * X.i + theta * X.i^2
@@ -156,7 +156,7 @@ for (i in 1:25) {
 	U.0i <- 1.5 * (U.D - 0.5) - U.D^2 + epsilon.i
 	U.1i <- -0.5 * (U.D - 0.5) + U.D^2 + epsilon.i
 	
-	v.i <- 1/U.D
+	v.i <- min(U.D) + (max(U.D) - min(U.D)) * U.D
 	D.star.i <- pi.0 + pi.1 * Z.star.i + pi.2 * X.i + v.i
 	
 	Y.0i <- U.0i + beta.0 * X.i + theta * X.i^2
