@@ -36,12 +36,17 @@ treated.propensity.score <- propensity.score[D.i == 1]
 untreated.propensity.score <- propensity.score[D.i == 0]
 histogram.treated <- hist(treated.propensity.score)
 histogram.untreated <- hist(untreated.propensity.score)
-plot(histogram.treated, col = rgb(0, 0, 1, 0.5))
+plot(histogram.treated, col = rgb(0, 0, 1, 0.5), xlab = 'propensity score', 
+	main = 'Histogram of propensity scores of treated and untreated obs.')
 plot(histogram.untreated, add = TRUE, col = rgb(1, 0, 0, 0.5))
+legend('top', legend = c('Treated', 'Untreated'), fill = c(rgb(0, 0, 1, 0.5), rgb(1, 0, 0, 0.5)))
 
 
 #	Question 2.2
 mte.curves <- matrix(nrow = length(seq(0, 1, 0.02)), ncol = 25)
+ATE <- c()
+ATU <- c()
+ATT <- c()
 for (i in 1:25) {
 	X.i <- rnorm(n, 0, 1)
 	Z.star.i <- rnorm(n, 0, 1)
@@ -74,9 +79,9 @@ for (i in 1:25) {
 	pi.hat.3 <- mte.reg$coefficients['I(propensity.score^3)']
 	mte.derivative <- beta.hat.1 * X.i + beta.hat.2 * X.i^2 + pi.hat.1 + 2 * pi.hat.2 * propensity.score + 3 * pi.hat.3 * propensity.score^2
 	
-	ATE <- mean(mte.derivative)
-	ATU <- mean(mte.derivative[D.i == 0])
-	ATT <- mean(mte.derivative[D.i == 1])
+	ATE <- append(ATE, mean(mte.derivative))
+	ATU <- append(ATU, mean(mte.derivative[D.i == 0]))
+	ATT <- append(ATT, mean(mte.derivative[D.i == 1]))
 
 	mte.curve <- c()
 	propensity.score <- round(propensity.score, 2)
@@ -90,11 +95,21 @@ mte.curve.avg <- c()
 for (k in 1:length(seq(0, 1, 0.02))) {
 	mte.curve.avg <- append(mte.curve.avg, mean(mte.curves[k,], na.rm = TRUE))
 }
-plot(seq(0, 1, 0.02)[!is.na(mte.curve.avg)], mte.curve.avg[!is.na(mte.curve.avg)], type = 'l')
+plot(seq(0, 1, 0.02)[!is.na(mte.curve.avg)], mte.curve.avg[!is.na(mte.curve.avg)], type = 'l',
+	main = bquote('MTE curve with cubic term for'~K(p)), xlab = 'propensity score/unobserved resistance to treatment',
+	ylab = 'treatment effect')
+c <- 1
+for (line in c(mean(ATE), mean(ATU), mean(ATT))) {
+	abline(h = line, col = c, lty = 2)
+	c <- c + 1
+}
 
 
 #	Question 2.3
 mte.curves <- matrix(nrow = length(seq(0, 1, 0.02)), ncol = 25)
+ATE <- c()
+ATU <- c()
+ATT <- c()
 for (i in 1:25) {
 	X.i <- rnorm(n, 0, 1)
 	Z.star.i <- rnorm(n, 0, 1)
@@ -126,9 +141,9 @@ for (i in 1:25) {
 	pi.hat.2 <- mte.reg$coefficients['I(propensity.score^2)']
 	mte.derivative <- beta.hat.1 * X.i + beta.hat.2 * X.i^2 + pi.hat.1 + 2 * pi.hat.2 * propensity.score
 	
-	ATE <- mean(mte.derivative)
-	ATU <- mean(mte.derivative[D.i == 0])
-	ATT <- mean(mte.derivative[D.i == 1])
+	ATE <- append(ATE, mean(mte.derivative))
+	ATU <- append(ATU, mean(mte.derivative[D.i == 0]))
+	ATT <- append(ATT, mean(mte.derivative[D.i == 1]))
 
 	mte.curve <- c()
 	propensity.score <- round(propensity.score, 2)
@@ -142,11 +157,21 @@ mte.curve.avg <- c()
 for (k in 1:length(seq(0, 1, 0.02))) {
 	mte.curve.avg <- append(mte.curve.avg, mean(mte.curves[k,], na.rm = TRUE))
 }
-plot(seq(0, 1, 0.02)[!is.na(mte.curve.avg)], mte.curve.avg[!is.na(mte.curve.avg)], type = 'l')
+plot(seq(0, 1, 0.02)[!is.na(mte.curve.avg)], mte.curve.avg[!is.na(mte.curve.avg)], type = 'l',
+	main = bquote('MTE curve with squared term for'~K(p)), xlab = 'propensity score/unobserved resistance to treatment',
+	ylab = 'treatment effect')
+c <- 1
+for (line in c(mean(ATE), mean(ATU), mean(ATT))) {
+	abline(h = line, col = c, lty = 2)
+	c <- c + 1
+}
 
 
 #	Question 2.4
 mte.curves <- matrix(nrow = length(seq(0, 1, 0.02)), ncol = 25)
+ATE <- c()
+ATU <- c()
+ATT <- c()
 for (i in 1:25) {
 	X.i <- rnorm(n, 0, 1)
 	Z.star.i <- rnorm(n, 0, 1)
@@ -177,9 +202,9 @@ for (i in 1:25) {
 	pi.hat.3 <- mte.reg$coefficients['I(propensity.score^3)']
 	mte.derivative <- beta.hat.1 * X.i + pi.hat.1 + 2 * pi.hat.2 * propensity.score + 3 * pi.hat.3 * propensity.score^2
 	
-	ATE <- mean(mte.derivative)
-	ATU <- mean(mte.derivative[D.i == 0])
-	ATT <- mean(mte.derivative[D.i == 1])
+	ATE <- append(ATE, mean(mte.derivative))
+	ATU <- append(ATU, mean(mte.derivative[D.i == 0]))
+	ATT <- append(ATT, mean(mte.derivative[D.i == 1]))
 
 	mte.curve <- c()
 	propensity.score <- round(propensity.score, 2)
@@ -193,4 +218,6 @@ mte.curve.avg <- c()
 for (k in 1:length(seq(0, 1, 0.02))) {
 	mte.curve.avg <- append(mte.curve.avg, mean(mte.curves[k,], na.rm = TRUE))
 }
-plot(seq(0, 1, 0.02)[!is.na(mte.curve.avg)], mte.curve.avg[!is.na(mte.curve.avg)], type = 'l')
+plot(seq(0, 1, 0.02)[!is.na(mte.curve.avg)], mte.curve.avg[!is.na(mte.curve.avg)], type = 'l',
+	main = bquote('MTE curve without terms for'~X[i]^2), xlab = 'propensity score/unobserved resistance to treatment',
+	ylab = 'treatment effect')
