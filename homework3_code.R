@@ -1,6 +1,8 @@
-
+#	Set seed for reproducability.
 set.seed(54)
 
+
+#	Parameters for question 2.
 n <- 100000
 pi.0 <- 0
 pi.1 <- 0.25
@@ -40,14 +42,20 @@ plot(histogram.treated, col = rgb(0, 0, 1, 0.5), xlab = 'propensity score',
 	main = 'Histogram of propensity scores of treated and untreated obs.')
 plot(histogram.untreated, add = TRUE, col = rgb(1, 0, 0, 0.5))
 legend('top', legend = c('Treated', 'Untreated'), fill = c(rgb(0, 0, 1, 0.5), rgb(1, 0, 0, 0.5)))
+abline(v = min(propensity.score[D.i == 1])+0.01, lty = 2)
+abline(v = max(propensity.score[D.i == 0])-0.01, lty = 2)
+text(x = 0.5, y = 25000, labels = 'common support')
+arrows(x0 = 0.5, y0 = 22500, x1 = min(propensity.score[D.i == 1])+0.01+0.01, y1 = 22500, length = 0.1)
+arrows(x0 = 0.5, y0 = 22500, x1 = max(propensity.score[D.i == 0])-0.01-0.01, y1 = 22500, length = 0.1)
 
 
 #	Question 2.2
-mte.curves <- matrix(nrow = length(seq(0, 1, 0.02)), ncol = 25)
+runs <- 100
+mte.curves <- matrix(nrow = length(seq(0, 1, 0.02)), ncol = runs)
 ATE <- c()
 ATU <- c()
 ATT <- c()
-for (i in 1:25) {
+for (i in 1:runs) {
 	X.i <- rnorm(n, 0, 1)
 	Z.star.i <- rnorm(n, 0, 1)
 	epsilon.i <- rnorm(n, 0, 0.5)
@@ -96,21 +104,23 @@ for (k in 1:length(seq(0, 1, 0.02))) {
 	mte.curve.avg <- append(mte.curve.avg, mean(mte.curves[k,], na.rm = TRUE))
 }
 plot(seq(0, 1, 0.02)[!is.na(mte.curve.avg)], mte.curve.avg[!is.na(mte.curve.avg)], type = 'l',
-	main = bquote('MTE curve with cubic term for'~K(p)), xlab = 'propensity score/unobserved resistance to treatment',
+	main = bquote('MTE curve with cubic term for'~K(p)), xlab = 'propensity score/unobserved gain from treatment',
 	ylab = 'treatment effect')
-c <- 1
-for (line in c(mean(ATE), mean(ATU), mean(ATT))) {
-	abline(h = line, col = c, lty = 2)
-	c <- c + 1
-}
+segments(y0 = mean(ATE), y1 = mean(ATE), x0 = 0, x1 = 1, col = 'black', lty = 2)
+segments(y0 = mean(ATU), y1 = mean(ATU), x0 = 0 , x1 = max(propensity.score[D.i == 0])-0.01-0.01, col = 'red', lty = 2)
+segments(y0 = mean(ATT), y1 = mean(ATT), x0 = min(propensity.score[D.i == 1])+0.01+0.01, x1 = 1, col = 'blue', lty = 2)
+legend('top', legend = c('MTE curve', 'ATE', 'ATU', 'ATT'), lty = c(1, 2, 2, 2), col = c('black', 'black', 'red', 'blue'))
+abline(v = min(propensity.score[D.i == 1])+0.01, lty = 2)
+abline(v = max(propensity.score[D.i == 0])-0.01, lty = 2)
 
 
 #	Question 2.3
-mte.curves <- matrix(nrow = length(seq(0, 1, 0.02)), ncol = 25)
+runs <- 100
+mte.curves <- matrix(nrow = length(seq(0, 1, 0.02)), ncol = runs)
 ATE <- c()
 ATU <- c()
 ATT <- c()
-for (i in 1:25) {
+for (i in 1:runs) {
 	X.i <- rnorm(n, 0, 1)
 	Z.star.i <- rnorm(n, 0, 1)
 	epsilon.i <- rnorm(n, 0, 0.5)
@@ -158,21 +168,23 @@ for (k in 1:length(seq(0, 1, 0.02))) {
 	mte.curve.avg <- append(mte.curve.avg, mean(mte.curves[k,], na.rm = TRUE))
 }
 plot(seq(0, 1, 0.02)[!is.na(mte.curve.avg)], mte.curve.avg[!is.na(mte.curve.avg)], type = 'l',
-	main = bquote('MTE curve with squared term for'~K(p)), xlab = 'propensity score/unobserved resistance to treatment',
+	main = bquote('MTE curve with squared term for'~K(p)), xlab = 'propensity score/unobserved gain from treatment',
 	ylab = 'treatment effect')
-c <- 1
-for (line in c(mean(ATE), mean(ATU), mean(ATT))) {
-	abline(h = line, col = c, lty = 2)
-	c <- c + 1
-}
+segments(y0 = mean(ATE), y1 = mean(ATE), x0 = 0, x1 = 1, col = 'black', lty = 2)
+segments(y0 = mean(ATU), y1 = mean(ATU), x0 = 0 , x1 = max(propensity.score[D.i == 0])-0.01-0.01, col = 'red', lty = 2)
+segments(y0 = mean(ATT), y1 = mean(ATT), x0 = min(propensity.score[D.i == 1])+0.01+0.01, x1 = 1, col = 'blue', lty = 2)
+legend('top', legend = c('MTE curve', 'ATE', 'ATU', 'ATT'), lty = c(1, 2, 2, 2), col = c('black', 'black', 'red', 'blue'))
+abline(v = min(propensity.score[D.i == 1])+0.01, lty = 2)
+abline(v = max(propensity.score[D.i == 0])-0.01, lty = 2)
 
 
 #	Question 2.4
-mte.curves <- matrix(nrow = length(seq(0, 1, 0.02)), ncol = 25)
+runs <- 100
+mte.curves <- matrix(nrow = length(seq(0, 1, 0.02)), ncol = runs)
 ATE <- c()
 ATU <- c()
 ATT <- c()
-for (i in 1:25) {
+for (i in 1:runs) {
 	X.i <- rnorm(n, 0, 1)
 	Z.star.i <- rnorm(n, 0, 1)
 	epsilon.i <- rnorm(n, 0, 0.5)
@@ -219,5 +231,11 @@ for (k in 1:length(seq(0, 1, 0.02))) {
 	mte.curve.avg <- append(mte.curve.avg, mean(mte.curves[k,], na.rm = TRUE))
 }
 plot(seq(0, 1, 0.02)[!is.na(mte.curve.avg)], mte.curve.avg[!is.na(mte.curve.avg)], type = 'l',
-	main = bquote('MTE curve without terms for'~X[i]^2), xlab = 'propensity score/unobserved resistance to treatment',
+	main = bquote('MTE curve without terms for'~X[i]^2), xlab = 'propensity score/unobserved gain from treatment',
 	ylab = 'treatment effect')
+segments(y0 = mean(ATE), y1 = mean(ATE), x0 = 0, x1 = 1, col = 'black', lty = 2)
+segments(y0 = mean(ATU), y1 = mean(ATU), x0 = 0 , x1 = max(propensity.score[D.i == 0])-0.01-0.01, col = 'red', lty = 2)
+segments(y0 = mean(ATT), y1 = mean(ATT), x0 = min(propensity.score[D.i == 1])+0.01+0.01, x1 = 1, col = 'blue', lty = 2)
+legend('top', legend = c('MTE curve', 'ATE', 'ATU', 'ATT'), lty = c(1, 2, 2, 2), col = c('black', 'black', 'red', 'blue'))
+abline(v = min(propensity.score[D.i == 1])+0.01, lty = 2)
+abline(v = max(propensity.score[D.i == 0])-0.01, lty = 2)
