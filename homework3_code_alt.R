@@ -61,13 +61,13 @@ matrix.mte <- outer(matrix.Xp, matrix.Kp, `+`)
 ATE.p <- rowMeans(matrix.mte, na.rm = TRUE)
 ATE <- mean(ATE.p)
 
-weights.ATT <- outer(propensity.score, u, `>=`)
-ATT.p <- rowSums(matrix.mte * weights.ATT, na.rm = TRUE) / rowSums(weights.ATT, na.rm = TRUE)
-ATT <- mean(ATT.p[D.i == 1])
-
-weights.ATU <- outer(propensity.score, u, `<`)
+weights.ATU <- outer(propensity.score, u, `>`)
 ATU.p <- rowSums(matrix.mte * weights.ATU, na.rm = TRUE) / rowSums(weights.ATU, na.rm = TRUE)
-ATU <- mean(ATU.p[D.i == 0])
+ATU <- mean(ATU.p[D.i == 1])
+
+weights.ATT <- outer(propensity.score, u, `<=`)
+ATT.p <- rowSums(matrix.mte * weights.ATT, na.rm = TRUE) / rowSums(weights.ATT, na.rm = TRUE)
+ATT <- mean(ATT.p[D.i == 0])
 
 mte.curve <- c()
 for (j in 1:length(seq(0, 1, 0.01))){
@@ -103,13 +103,13 @@ matrix.mte <- outer(matrix.Xp, matrix.Kp, `+`)
 ATE.p <- rowMeans(matrix.mte, na.rm = TRUE)
 ATE <- mean(ATE.p)
 
-weights.ATT <- outer(propensity.score, u, `>=`)
-ATT.p <- rowSums(matrix.mte * weights.ATT, na.rm = TRUE) / rowSums(weights.ATT, na.rm = TRUE)
-ATT <- mean(ATT.p[D.i == 1])
-
-weights.ATU <- outer(propensity.score, u, `<`)
+weights.ATU <- outer(propensity.score, u, `>`)
 ATU.p <- rowSums(matrix.mte * weights.ATU, na.rm = TRUE) / rowSums(weights.ATU, na.rm = TRUE)
-ATU <- mean(ATU.p[D.i == 0])
+ATU <- mean(ATU.p[D.i == 1])
+
+weights.ATT <- outer(propensity.score, u, `<=`)
+ATT.p <- rowSums(matrix.mte * weights.ATT, na.rm = TRUE) / rowSums(weights.ATT, na.rm = TRUE)
+ATT <- mean(ATT.p[D.i == 0])
 
 mte.curve <- c()
 for (j in 1:length(seq(0, 1, 0.01))){
@@ -144,13 +144,13 @@ matrix.mte <- outer(matrix.Xp, matrix.Kp, `+`)
 ATE.p <- rowMeans(matrix.mte, na.rm = TRUE)
 ATE <- mean(ATE.p)
 
-weights.ATT <- outer(propensity.score, u, `>=`)
-ATT.p <- rowSums(matrix.mte * weights.ATT, na.rm = TRUE) / rowSums(weights.ATT, na.rm = TRUE)
-ATT <- mean(ATT.p[D.i == 1])
-
-weights.ATU <- outer(propensity.score, u, `<`)
+weights.ATU <- outer(propensity.score, u, `>`)
 ATU.p <- rowSums(matrix.mte * weights.ATU, na.rm = TRUE) / rowSums(weights.ATU, na.rm = TRUE)
-ATU <- mean(ATU.p[D.i == 0])
+ATU <- mean(ATU.p[D.i == 1])
+
+weights.ATT <- outer(propensity.score, u, `<=`)
+ATT.p <- rowSums(matrix.mte * weights.ATT, na.rm = TRUE) / rowSums(weights.ATT, na.rm = TRUE)
+ATT <- mean(ATT.p[D.i == 0])
 
 mte.curve <- c()
 for (j in 1:length(seq(0, 1, 0.01))){
