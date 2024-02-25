@@ -61,11 +61,11 @@ matrix.mte <- outer(matrix.Xp, matrix.Kp, `+`)
 ATE.p <- rowMeans(matrix.mte, na.rm = TRUE)
 ATE <- mean(ATE.p)
 
-weights.ATU <- outer(propensity.score, u, `>`)
+weights.ATU <- outer(propensity.score, u, `>=`)
 ATU.p <- rowSums(matrix.mte * weights.ATU, na.rm = TRUE) / rowSums(weights.ATU, na.rm = TRUE)
 ATU <- mean(ATU.p[D.i == 0])
 
-weights.ATT <- outer(propensity.score, u, `<=`)
+weights.ATT <- outer(propensity.score, u, `<`)
 ATT.p <- rowSums(matrix.mte * weights.ATT, na.rm = TRUE) / rowSums(weights.ATT, na.rm = TRUE)
 ATT <- mean(ATT.p[D.i == 1])
 
@@ -107,11 +107,11 @@ matrix.mte <- outer(matrix.Xp, matrix.Kp, `+`)
 ATE.p <- rowMeans(matrix.mte, na.rm = TRUE)
 ATE <- mean(ATE.p)
 
-weights.ATU <- outer(propensity.score, u, `>`)
+weights.ATU <- outer(propensity.score, u, `>=`)
 ATU.p <- rowSums(matrix.mte * weights.ATU, na.rm = TRUE) / rowSums(weights.ATU, na.rm = TRUE)
 ATU <- mean(ATU.p[D.i == 0])
 
-weights.ATT <- outer(propensity.score, u, `<=`)
+weights.ATT <- outer(propensity.score, u, `<`)
 ATT.p <- rowSums(matrix.mte * weights.ATT, na.rm = TRUE) / rowSums(weights.ATT, na.rm = TRUE)
 ATT <- mean(ATT.p[D.i == 1])
 
@@ -152,11 +152,11 @@ matrix.mte <- outer(matrix.Xp, matrix.Kp, `+`)
 ATE.p <- rowMeans(matrix.mte, na.rm = TRUE)
 ATE <- mean(ATE.p)
 
-weights.ATU <- outer(propensity.score, u, `>`)
+weights.ATU <- outer(propensity.score, u, `>=`)
 ATU.p <- rowSums(matrix.mte * weights.ATU, na.rm = TRUE) / rowSums(weights.ATU, na.rm = TRUE)
 ATU <- mean(ATU.p[D.i == 0])
 
-weights.ATT <- outer(propensity.score, u, `<=`)
+weights.ATT <- outer(propensity.score, u, `<`)
 ATT.p <- rowSums(matrix.mte * weights.ATT, na.rm = TRUE) / rowSums(weights.ATT, na.rm = TRUE)
 ATT <- mean(ATT.p[D.i == 1])
 

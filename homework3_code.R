@@ -51,9 +51,7 @@ arrows(x0 = 0.5, y0 = 22500, x1 = max(propensity.score[D.i == 0])-0.01-0.01, y1 
 
 #	Question 2.2
 runs <- 100
-mte.curves <- matrix(nrow = length(seq(0, 1, 0.02)), ncol = 0)
-omega.0.matrix <- matrix(nrow = length(seq(0, 1, 0.02)), ncol = 0)
-omega.1.matrix <- matrix(nrow = length(seq(0, 1, 0.02)), ncol = 0)
+mte.curves <- matrix(nrow = length(seq(0, 1, 0.01)), ncol = 0)
 ATE <- c()
 ATU <- c()
 ATT <- c()
@@ -87,36 +85,32 @@ for (i in 1:runs) {
 	pi.hat.1 <- mte.reg$coefficients['propensity.score']
 	pi.hat.2 <- mte.reg$coefficients['I(propensity.score^2)']
 	pi.hat.3 <- mte.reg$coefficients['I(propensity.score^3)']
-	mte.derivative <- beta.hat.1 * X.i + beta.hat.2 * X.i^2 + pi.hat.1 + 2 * pi.hat.2 * propensity.score + 3 * pi.hat.3 * propensity.score^2
 	
-	ATE <- append(ATE, mean(mte.derivative))
-	ATU <- append(ATU, mean(mte.derivative[D.i == 0]))
-	ATT <- append(ATT, mean(mte.derivative[D.i == 1]))
-
+	v <- seq(0, 1, 0.01)
+	matrix.Xp <- beta.hat.1 * X.i + beta.hat.2 * X.i^2
+	matrix.Kp <- pi.hat.1 + 2 * pi.hat.2 * v + 3 * pi.hat.3 * v^2
+	matrix.mte <- outer(matrix.Xp, matrix.Kp, `+`)
+	
+	ATE.p <- rowMeans(matrix.mte, na.rm = TRUE)
+	ATE <- append(ATE, mean(ATE.p))
+	
+	weights.ATU <- outer(propensity.score, v, `>=`)
+	ATU.p <- rowSums(matrix.mte * weights.ATU, na.rm = TRUE) / rowSums(weights.ATU, na.rm = TRUE)
+	ATU <- append(ATU, mean(ATU.p[D.i == 0]))
+	
+	weights.ATT <- outer(propensity.score, v, `<`)
+	ATT.p <- rowSums(matrix.mte * weights.ATT, na.rm = TRUE) / rowSums(weights.ATT, na.rm = TRUE)
+	ATT <- append(ATT, mean(ATT.p[D.i == 1]))
+	
 	mte.curve <- c()
-	omega.0 <- c()
-	omega.1 <- c()
-	propensity.score <- round(propensity.score, 2)
-	for (j in seq(0, 1, 0.02)){
-		j <- round(j, 2)
-		mte.curve <- append(mte.curve, mean(mte.derivative[propensity.score == j]))
-		omega.0 <- append(omega.0, length(D.i[D.i == 0 & propensity.score > j - 0.02 & propensity.score <= j]) / length(D.i[propensity.score > j - 0.02 & propensity.score <= j]))
-		omega.1 <- append(omega.1, length(D.i[D.i == 1 & propensity.score > j - 0.02 & propensity.score <= j]) / length(D.i[propensity.score > j - 0.02 & propensity.score <= j]))
+	for (j in 1:length(seq(0, 1, 0.01))){
+		mte.curve <- append(mte.curve, mean(matrix.Xp) + matrix.Kp[j])
 	}
-	mte.curves <- cbind(mte.curves, matrix(mte.curve))
-	omega.0.matrix <- cbind(omega.0.matrix, matrix(omega.0))
-	omega.1.matrix <- cbind(omega.1.matrix, matrix(omega.1))
+	mte.curves <- cbind(mte.curves, mte.curve)
 }
 
-mte.curve.avg <- c()
-omega.0.avg <- c()
-omega.1.avg <- c()
-for (k in 1:length(seq(0, 1, 0.02))) {
-	mte.curve.avg <- append(mte.curve.avg, mean(mte.curves[k,]))
-	omega.0.avg <- append(omega.0.avg, mean(omega.0.matrix[k,]))
-	omega.1.avg <- append(omega.1.avg, mean(omega.1.matrix[k,]))
-}
-plot(seq(0, 1, 0.02)[!is.na(mte.curve.avg)], mte.curve.avg[!is.na(mte.curve.avg)], type = 'l',
+mte.curve <- rowMeans(mte.curves)
+plot(seq(0, 1, 0.01), mte.curve, type = 'l',
 	main = bquote('MTE curve with cubic term for'~K(p)), xlab = 'propensity score/unobserved gain from treatment',
 	ylab = 'treatment effect', ylim = c(0.3, 1.6))
 segments(y0 = mean(ATE), y1 = mean(ATE), x0 = 0, x1 = 1, col = 'black', lty = 2)
@@ -129,9 +123,7 @@ abline(v = max(propensity.score[D.i == 0])-0.01, lty = 2)
 
 #	Question 2.3
 runs <- 100
-mte.curves <- matrix(nrow = length(seq(0, 1, 0.02)), ncol = 0)
-omega.0.matrix <- matrix(nrow = length(seq(0, 1, 0.02)), ncol = 0)
-omega.1.matrix <- matrix(nrow = length(seq(0, 1, 0.02)), ncol = 0)
+mte.curves <- matrix(nrow = length(seq(0, 1, 0.01)), ncol = 0)
 ATE <- c()
 ATU <- c()
 ATT <- c()
@@ -164,38 +156,34 @@ for (i in 1:runs) {
 	beta.hat.2 <- mte.reg$coefficients['I(X.i^2):propensity.score']
 	pi.hat.1 <- mte.reg$coefficients['propensity.score']
 	pi.hat.2 <- mte.reg$coefficients['I(propensity.score^2)']
-	mte.derivative <- beta.hat.1 * X.i + beta.hat.2 * X.i^2 + pi.hat.1 + 2 * pi.hat.2 * propensity.score
 	
-	ATE <- append(ATE, mean(mte.derivative))
-	ATU <- append(ATU, mean(mte.derivative[D.i == 0]))
-	ATT <- append(ATT, mean(mte.derivative[D.i == 1]))
-
+	v <- seq(0, 1, 0.01)
+	matrix.Xp <- beta.hat.1 * X.i + beta.hat.2 * X.i^2
+	matrix.Kp <- pi.hat.1 + 2 * pi.hat.2 * v
+	matrix.mte <- outer(matrix.Xp, matrix.Kp, `+`)
+	
+	ATE.p <- rowMeans(matrix.mte, na.rm = TRUE)
+	ATE <- append(ATE, mean(ATE.p))
+	
+	weights.ATU <- outer(propensity.score, v, `>=`)
+	ATU.p <- rowSums(matrix.mte * weights.ATU, na.rm = TRUE) / rowSums(weights.ATU, na.rm = TRUE)
+	ATU <- append(ATU, mean(ATU.p[D.i == 0]))
+	
+	weights.ATT <- outer(propensity.score, v, `<`)
+	ATT.p <- rowSums(matrix.mte * weights.ATT, na.rm = TRUE) / rowSums(weights.ATT, na.rm = TRUE)
+	ATT <- append(ATT, mean(ATT.p[D.i == 1]))
+	
 	mte.curve <- c()
-	omega.0 <- c()
-	omega.1 <- c()
-	propensity.score <- round(propensity.score, 2)
-	for (j in seq(0, 1, 0.02)){
-		j <- round(j, 2)
-		mte.curve <- append(mte.curve, mean(mte.derivative[propensity.score == j]))
-		omega.0 <- append(omega.0, length(D.i[D.i == 0 & propensity.score > j - 0.02 & propensity.score <= j]) / length(D.i[propensity.score > j - 0.02 & propensity.score <= j]))
-		omega.1 <- append(omega.1, length(D.i[D.i == 1 & propensity.score > j - 0.02 & propensity.score <= j]) / length(D.i[propensity.score > j - 0.02 & propensity.score <= j]))
+	for (j in 1:length(seq(0, 1, 0.01))){
+		mte.curve <- append(mte.curve, mean(matrix.Xp) + matrix.Kp[j])
 	}
-	mte.curves <- cbind(mte.curves, matrix(mte.curve))
-	omega.0.matrix <- cbind(omega.0.matrix, matrix(omega.0))
-	omega.1.matrix <- cbind(omega.1.matrix, matrix(omega.1))
+	mte.curves <- cbind(mte.curves, mte.curve)
 }
 
-mte.curve.avg <- c()
-omega.0.avg <- c()
-omega.1.avg <- c()
-for (k in 1:length(seq(0, 1, 0.02))) {
-	mte.curve.avg <- append(mte.curve.avg, mean(mte.curves[k,]))
-	omega.0.avg <- append(omega.0.avg, mean(omega.0.matrix[k,]))
-	omega.1.avg <- append(omega.1.avg, mean(omega.1.matrix[k,]))
-}
-plot(seq(0, 1, 0.02)[!is.na(mte.curve.avg)], mte.curve.avg[!is.na(mte.curve.avg)], type = 'l',
+mte.curve <- rowMeans(mte.curves)
+plot(seq(0, 1, 0.01), mte.curve, type = 'l',
 	main = bquote('MTE curve with squared term for'~K(p)), xlab = 'propensity score/unobserved gain from treatment',
-	ylab = 'treatment effect')
+	ylab = 'treatment effect', ylim = c(0.5, 0.65))
 segments(y0 = mean(ATE), y1 = mean(ATE), x0 = 0, x1 = 1, col = 'black', lty = 2)
 segments(y0 = mean(ATU), y1 = mean(ATU), x0 = 0 , x1 = max(propensity.score[D.i == 0])-0.01-0.01, col = 'red', lty = 2)
 segments(y0 = mean(ATT), y1 = mean(ATT), x0 = min(propensity.score[D.i == 1])+0.01+0.01, x1 = 1, col = 'blue', lty = 2)
@@ -206,9 +194,7 @@ abline(v = max(propensity.score[D.i == 0])-0.01, lty = 2)
 
 #	Question 2.4
 runs <- 100
-mte.curves <- matrix(nrow = length(seq(0, 1, 0.02)), ncol = 0)
-omega.0.matrix <- matrix(nrow = length(seq(0, 1, 0.02)), ncol = 0)
-omega.1.matrix <- matrix(nrow = length(seq(0, 1, 0.02)), ncol = 0)
+mte.curves <- matrix(nrow = length(seq(0, 1, 0.01)), ncol = 0)
 ATE <- c()
 ATU <- c()
 ATT <- c()
@@ -240,36 +226,32 @@ for (i in 1:runs) {
 	pi.hat.1 <- mte.reg$coefficients['propensity.score']
 	pi.hat.2 <- mte.reg$coefficients['I(propensity.score^2)']
 	pi.hat.3 <- mte.reg$coefficients['I(propensity.score^3)']
-	mte.derivative <- beta.hat.1 * X.i + pi.hat.1 + 2 * pi.hat.2 * propensity.score + 3 * pi.hat.3 * propensity.score^2
 	
-	ATE <- append(ATE, mean(mte.derivative))
-	ATU <- append(ATU, mean(mte.derivative[D.i == 0]))
-	ATT <- append(ATT, mean(mte.derivative[D.i == 1]))
-
+	v <- seq(0, 1, 0.01)
+	matrix.Xp <- beta.hat.1 * X.i
+	matrix.Kp <- pi.hat.1 + 2 * pi.hat.2 * v + 3 * pi.hat.3 * v^2
+	matrix.mte <- outer(matrix.Xp, matrix.Kp, `+`)
+	
+	ATE.p <- rowMeans(matrix.mte, na.rm = TRUE)
+	ATE <- append(ATE, mean(ATE.p))
+	
+	weights.ATU <- outer(propensity.score, v, `>=`)
+	ATU.p <- rowSums(matrix.mte * weights.ATU, na.rm = TRUE) / rowSums(weights.ATU, na.rm = TRUE)
+	ATU <- append(ATU, mean(ATU.p[D.i == 0]))
+	
+	weights.ATT <- outer(propensity.score, v, `<`)
+	ATT.p <- rowSums(matrix.mte * weights.ATT, na.rm = TRUE) / rowSums(weights.ATT, na.rm = TRUE)
+	ATT <- append(ATT, mean(ATT.p[D.i == 1]))
+	
 	mte.curve <- c()
-	omega.0 <- c()
-	omega.1 <- c()
-	propensity.score <- round(propensity.score, 2)
-	for (j in seq(0, 1, 0.02)){
-		j <- round(j, 2)
-		mte.curve <- append(mte.curve, mean(mte.derivative[propensity.score == j]))
-		omega.0 <- append(omega.0, length(D.i[D.i == 0 & propensity.score > j - 0.02 & propensity.score <= j]) / length(D.i[propensity.score > j - 0.02 & propensity.score <= j]))
-		omega.1 <- append(omega.1, length(D.i[D.i == 1 & propensity.score > j - 0.02 & propensity.score <= j]) / length(D.i[propensity.score > j - 0.02 & propensity.score <= j]))
+	for (j in 1:length(seq(0, 1, 0.01))){
+		mte.curve <- append(mte.curve, mean(matrix.Xp) + matrix.Kp[j])
 	}
-	mte.curves <- cbind(mte.curves, matrix(mte.curve))
-	omega.0.matrix <- cbind(omega.0.matrix, matrix(omega.0))
-	omega.1.matrix <- cbind(omega.1.matrix, matrix(omega.1))
+	mte.curves <- cbind(mte.curves, mte.curve)
 }
 
 mte.curve.avg <- c()
-omega.0.avg <- c()
-omega.1.avg <- c()
-for (k in 1:length(seq(0, 1, 0.02))) {
-	mte.curve.avg <- append(mte.curve.avg, mean(mte.curves[k,]))
-	omega.0.avg <- append(omega.0.avg, mean(omega.0.matrix[k,]))
-	omega.1.avg <- append(omega.1.avg, mean(omega.1.matrix[k,]))
-}
-plot(seq(0, 1, 0.02)[!is.na(mte.curve.avg)], mte.curve.avg[!is.na(mte.curve.avg)], type = 'l',
+plot(seq(0, 1, 0.01), mte.curve, type = 'l',
 	main = bquote('MTE curve without terms for'~X[i]^2), xlab = 'propensity score/unobserved gain from treatment',
 	ylab = 'treatment effect')
 segments(y0 = mean(ATE), y1 = mean(ATE), x0 = 0, x1 = 1, col = 'black', lty = 2)
@@ -278,11 +260,3 @@ segments(y0 = mean(ATT), y1 = mean(ATT), x0 = min(propensity.score[D.i == 1])+0.
 legend('top', legend = c('MTE curve', 'ATE', 'ATU', 'ATT'), lty = c(1, 2, 2, 2), col = c('black', 'black', 'red', 'blue'))
 abline(v = min(propensity.score[D.i == 1])+0.01, lty = 2)
 abline(v = max(propensity.score[D.i == 0])-0.01, lty = 2)
-
-
-#	weights plot.
-plot(seq(0, 1, 0.02),  omega.0.avg / mean(omega.0.avg), pch = 19, col = 'lightblue',
-	main = 'Weights', ylab = '', xlab = 'propensity score/unobserved gain from treatment')
-points(seq(0, 1, 0.02),  omega.1.avg / mean(omega.1.avg), pch = 19, col = 'orange')
-points(seq(0, 1, 0.02), rep(1, times = 51), pch = 19, col = 'darkgreen')
-legend('top', legend = c('ATE', 'ATT', 'ATU'), col = c('darkgreen', 'orange', 'lightblue'), pch = 19)
