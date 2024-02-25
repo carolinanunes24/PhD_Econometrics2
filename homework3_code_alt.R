@@ -63,11 +63,11 @@ ATE <- mean(ATE.p)
 
 weights.ATU <- outer(propensity.score, u, `>`)
 ATU.p <- rowSums(matrix.mte * weights.ATU, na.rm = TRUE) / rowSums(weights.ATU, na.rm = TRUE)
-ATU <- mean(ATU.p[D.i == 1])
+ATU <- mean(ATU.p[D.i == 0])
 
 weights.ATT <- outer(propensity.score, u, `<=`)
 ATT.p <- rowSums(matrix.mte * weights.ATT, na.rm = TRUE) / rowSums(weights.ATT, na.rm = TRUE)
-ATT <- mean(ATT.p[D.i == 0])
+ATT <- mean(ATT.p[D.i == 1])
 
 mte.curve <- c()
 for (j in 1:length(seq(0, 1, 0.01))){
@@ -76,6 +76,10 @@ for (j in 1:length(seq(0, 1, 0.01))){
 plot(seq(0, 1, 0.01), mte.curve, type = 'l',
 	main = bquote('MTE curve with cubic term for'~K(p)), xlab = 'propensity score/unobserved gain from treatment',
 	ylab = 'treatment effect')
+segments(y0 = mean(ATE), y1 = mean(ATE), x0 = 0, x1 = 1, col = 'black', lty = 2)
+segments(y0 = mean(ATU), y1 = mean(ATU), x0 = 0 , x1 = max(propensity.score[D.i == 0])-0.01-0.01, col = 'red', lty = 2)
+segments(y0 = mean(ATT), y1 = mean(ATT), x0 = min(propensity.score[D.i == 1])+0.01+0.01, x1 = 1, col = 'blue', lty = 2)
+legend('top', legend = c('MTE curve', 'ATE', 'ATU', 'ATT'), lty = c(1, 2, 2, 2), col = c('black', 'black', 'red', 'blue'))
 
 
 #	Question 2.3
@@ -105,11 +109,11 @@ ATE <- mean(ATE.p)
 
 weights.ATU <- outer(propensity.score, u, `>`)
 ATU.p <- rowSums(matrix.mte * weights.ATU, na.rm = TRUE) / rowSums(weights.ATU, na.rm = TRUE)
-ATU <- mean(ATU.p[D.i == 1])
+ATU <- mean(ATU.p[D.i == 0])
 
 weights.ATT <- outer(propensity.score, u, `<=`)
 ATT.p <- rowSums(matrix.mte * weights.ATT, na.rm = TRUE) / rowSums(weights.ATT, na.rm = TRUE)
-ATT <- mean(ATT.p[D.i == 0])
+ATT <- mean(ATT.p[D.i == 1])
 
 mte.curve <- c()
 for (j in 1:length(seq(0, 1, 0.01))){
@@ -118,6 +122,10 @@ for (j in 1:length(seq(0, 1, 0.01))){
 plot(seq(0, 1, 0.01), mte.curve, type = 'l',
 	main = bquote('MTE curve with squared term for'~K(p)), xlab = 'propensity score/unobserved gain from treatment',
 	ylab = 'treatment effect')
+segments(y0 = mean(ATE), y1 = mean(ATE), x0 = 0, x1 = 1, col = 'black', lty = 2)
+segments(y0 = mean(ATU), y1 = mean(ATU), x0 = 0 , x1 = max(propensity.score[D.i == 0])-0.01-0.01, col = 'red', lty = 2)
+segments(y0 = mean(ATT), y1 = mean(ATT), x0 = min(propensity.score[D.i == 1])+0.01+0.01, x1 = 1, col = 'blue', lty = 2)
+legend('top', legend = c('MTE curve', 'ATE', 'ATU', 'ATT'), lty = c(1, 2, 2, 2), col = c('black', 'black', 'red', 'blue'))
 
 
 #	Question 2.4
@@ -146,11 +154,11 @@ ATE <- mean(ATE.p)
 
 weights.ATU <- outer(propensity.score, u, `>`)
 ATU.p <- rowSums(matrix.mte * weights.ATU, na.rm = TRUE) / rowSums(weights.ATU, na.rm = TRUE)
-ATU <- mean(ATU.p[D.i == 1])
+ATU <- mean(ATU.p[D.i == 0])
 
 weights.ATT <- outer(propensity.score, u, `<=`)
 ATT.p <- rowSums(matrix.mte * weights.ATT, na.rm = TRUE) / rowSums(weights.ATT, na.rm = TRUE)
-ATT <- mean(ATT.p[D.i == 0])
+ATT <- mean(ATT.p[D.i == 1])
 
 mte.curve <- c()
 for (j in 1:length(seq(0, 1, 0.01))){
@@ -159,3 +167,7 @@ for (j in 1:length(seq(0, 1, 0.01))){
 plot(seq(0, 1, 0.01), mte.curve, type = 'l',
 	main = bquote('MTE curve without terms for'~X[i]^2), xlab = 'propensity score/unobserved gain from treatment',
 	ylab = 'treatment effect')
+segments(y0 = mean(ATE), y1 = mean(ATE), x0 = 0, x1 = 1, col = 'black', lty = 2)
+segments(y0 = mean(ATU), y1 = mean(ATU), x0 = 0 , x1 = max(propensity.score[D.i == 0])-0.01-0.01, col = 'red', lty = 2)
+segments(y0 = mean(ATT), y1 = mean(ATT), x0 = min(propensity.score[D.i == 1])+0.01+0.01, x1 = 1, col = 'blue', lty = 2)
+legend('top', legend = c('MTE curve', 'ATE', 'ATU', 'ATT'), lty = c(1, 2, 2, 2), col = c('black', 'black', 'red', 'blue'))
