@@ -98,6 +98,7 @@ for (i in 1:runs) {
 	omega.1 <- c()
 	propensity.score <- round(propensity.score, 2)
 	for (j in seq(0, 1, 0.02)){
+		j <- round(j, 2)
 		mte.curve <- append(mte.curve, mean(mte.derivative[propensity.score == j]))
 		omega.0 <- append(omega.0, length(D.i[D.i == 0 & propensity.score > j - 0.02 & propensity.score <= j]) / length(D.i[propensity.score > j - 0.02 & propensity.score <= j]))
 		omega.1 <- append(omega.1, length(D.i[D.i == 1 & propensity.score > j - 0.02 & propensity.score <= j]) / length(D.i[propensity.score > j - 0.02 & propensity.score <= j]))
@@ -174,6 +175,7 @@ for (i in 1:runs) {
 	omega.1 <- c()
 	propensity.score <- round(propensity.score, 2)
 	for (j in seq(0, 1, 0.02)){
+		j <- round(j, 2)
 		mte.curve <- append(mte.curve, mean(mte.derivative[propensity.score == j]))
 		omega.0 <- append(omega.0, length(D.i[D.i == 0 & propensity.score > j - 0.02 & propensity.score <= j]) / length(D.i[propensity.score > j - 0.02 & propensity.score <= j]))
 		omega.1 <- append(omega.1, length(D.i[D.i == 1 & propensity.score > j - 0.02 & propensity.score <= j]) / length(D.i[propensity.score > j - 0.02 & propensity.score <= j]))
@@ -249,6 +251,7 @@ for (i in 1:runs) {
 	omega.1 <- c()
 	propensity.score <- round(propensity.score, 2)
 	for (j in seq(0, 1, 0.02)){
+		j <- round(j, 2)
 		mte.curve <- append(mte.curve, mean(mte.derivative[propensity.score == j]))
 		omega.0 <- append(omega.0, length(D.i[D.i == 0 & propensity.score > j - 0.02 & propensity.score <= j]) / length(D.i[propensity.score > j - 0.02 & propensity.score <= j]))
 		omega.1 <- append(omega.1, length(D.i[D.i == 1 & propensity.score > j - 0.02 & propensity.score <= j]) / length(D.i[propensity.score > j - 0.02 & propensity.score <= j]))
