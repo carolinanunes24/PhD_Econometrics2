@@ -52,6 +52,8 @@ arrows(x0 = 0.5, y0 = 22500, x1 = max(propensity.score[D.i == 0])-0.01-0.01, y1 
 #	Question 2.2
 runs <- 100
 mte.curves <- matrix(nrow = length(seq(0, 1, 0.01)), ncol = 0)
+matrix.p <- matrix(nrow = n, ncol = 0)
+matrix.D <- matrix(nrow = n, ncol = 0)
 ATE <- c()
 ATU <- c()
 ATT <- c()
@@ -76,6 +78,8 @@ for (i in 1:runs) {
 	
 	first.stage <- glm(D.i ~ Z.star.i + X.i, family = binomial(link = "probit"))
 	propensity.score <- first.stage$fitted
+	matrix.p <- cbind(matrix.p, propensity.score)
+	matrix.D <- cbind(matrix.D, D.i)
 	
 	mte.reg <- lm(Y.i ~ X.i + I(X.i^2) + propensity.score * X.i + propensity.score * I(X.i^2) + propensity.score + I(propensity.score^2) + I(propensity.score^3))
 	gamma.hat.0 <-  mte.reg$coefficients['X.i']
@@ -113,17 +117,19 @@ mte.curve <- rowMeans(mte.curves)
 plot(seq(0, 1, 0.01), mte.curve, type = 'l',
 	main = bquote('MTE curve with cubic term for'~K(p)), xlab = 'propensity score/unobserved gain from treatment',
 	ylab = 'treatment effect', ylim = c(0.3, 1.6))
-segments(y0 = mean(ATE), y1 = mean(ATE), x0 = 0, x1 = 1, col = 'black', lty = 2)
-segments(y0 = mean(ATU), y1 = mean(ATU), x0 = 0 , x1 = max(propensity.score[D.i == 0])-0.01-0.01, col = 'red', lty = 2)
-segments(y0 = mean(ATT), y1 = mean(ATT), x0 = min(propensity.score[D.i == 1])+0.01+0.01, x1 = 1, col = 'blue', lty = 2)
-legend('top', legend = c('MTE curve', 'ATE', 'ATU', 'ATT'), lty = c(1, 2, 2, 2), col = c('black', 'black', 'red', 'blue'))
-abline(v = min(propensity.score[D.i == 1])+0.01, lty = 2)
-abline(v = max(propensity.score[D.i == 0])-0.01, lty = 2)
+segments(y0 = mean(ATE), y1 = mean(ATE), x0 = 0, x1 = 1, col = 'darkgreen', lty = 2)
+segments(y0 = mean(ATU), y1 = mean(ATU), x0 = 0 , x1 = max(matrix.p[matrix.D == 0]), col = 'red', lty = 2)
+segments(y0 = mean(ATT), y1 = mean(ATT), x0 = min(matrix.p[matrix.D == 1]), x1 = 1, col = 'blue', lty = 2)
+legend('top', legend = c('MTE curve', 'ATE', 'ATU', 'ATT'), lty = c(1, 2, 2, 2), col = c('black', 'darkgreen', 'red', 'blue'))
+abline(v = min(matrix.p[matrix.D == 1]), lty = 2)
+abline(v = max(matrix.p[matrix.D == 0]), lty = 2)
 
 
 #	Question 2.3
 runs <- 100
 mte.curves <- matrix(nrow = length(seq(0, 1, 0.01)), ncol = 0)
+matrix.p <- matrix(nrow = n, ncol = 0)
+matrix.D <- matrix(nrow = n, ncol = 0)
 ATE <- c()
 ATU <- c()
 ATT <- c()
@@ -148,6 +154,8 @@ for (i in 1:runs) {
 	
 	first.stage <- glm(D.i ~ Z.star.i + X.i, family = binomial(link = "probit"))
 	propensity.score <- first.stage$fitted
+	matrix.p <- cbind(matrix.p, propensity.score)
+	matrix.D <- cbind(matrix.D, D.i)
 	
 	mte.reg <- lm(Y.i ~ X.i + I(X.i^2) + propensity.score * X.i + propensity.score * I(X.i^2) + propensity.score + I(propensity.score^2))
 	gamma.hat.0 <-  mte.reg$coefficients['X.i']
@@ -184,17 +192,19 @@ mte.curve <- rowMeans(mte.curves)
 plot(seq(0, 1, 0.01), mte.curve, type = 'l',
 	main = bquote('MTE curve with squared term for'~K(p)), xlab = 'propensity score/unobserved gain from treatment',
 	ylab = 'treatment effect', ylim = c(0.5, 0.65))
-segments(y0 = mean(ATE), y1 = mean(ATE), x0 = 0, x1 = 1, col = 'black', lty = 2)
-segments(y0 = mean(ATU), y1 = mean(ATU), x0 = 0 , x1 = max(propensity.score[D.i == 0])-0.01-0.01, col = 'red', lty = 2)
-segments(y0 = mean(ATT), y1 = mean(ATT), x0 = min(propensity.score[D.i == 1])+0.01+0.01, x1 = 1, col = 'blue', lty = 2)
-legend('top', legend = c('MTE curve', 'ATE', 'ATU', 'ATT'), lty = c(1, 2, 2, 2), col = c('black', 'black', 'red', 'blue'))
-abline(v = min(propensity.score[D.i == 1])+0.01, lty = 2)
-abline(v = max(propensity.score[D.i == 0])-0.01, lty = 2)
+segments(y0 = mean(ATE), y1 = mean(ATE), x0 = 0, x1 = 1, col = 'darkgreen', lty = 2)
+segments(y0 = mean(ATU), y1 = mean(ATU), x0 = 0 , x1 = max(matrix.p[matrix.D == 0]), col = 'red', lty = 2)
+segments(y0 = mean(ATT), y1 = mean(ATT), x0 = min(matrix.p[matrix.D == 1]), x1 = 1, col = 'blue', lty = 2)
+legend('top', legend = c('MTE curve', 'ATE', 'ATU', 'ATT'), lty = c(1, 2, 2, 2), col = c('black', 'darkgreen', 'red', 'blue'))
+abline(v = min(matrix.p[matrix.D == 1]), lty = 2)
+abline(v = max(matrix.p[matrix.D == 0]), lty = 2)
 
 
 #	Question 2.4
 runs <- 100
 mte.curves <- matrix(nrow = length(seq(0, 1, 0.01)), ncol = 0)
+matrix.p <- matrix(nrow = n, ncol = 0)
+matrix.D <- matrix(nrow = n, ncol = 0)
 ATE <- c()
 ATU <- c()
 ATT <- c()
@@ -219,6 +229,8 @@ for (i in 1:runs) {
 	
 	first.stage <- glm(D.i ~ Z.star.i + X.i, family = binomial(link = "probit"))
 	propensity.score <- first.stage$fitted
+	matrix.p <- cbind(matrix.p, propensity.score)
+	matrix.D <- cbind(matrix.D, D.i)
 	
 	mte.reg <- lm(Y.i ~ X.i + propensity.score * X.i + propensity.score + I(propensity.score^2) + I(propensity.score^3))
 	gamma.hat.0 <-  mte.reg$coefficients['X.i']
@@ -254,9 +266,9 @@ mte.curve.avg <- c()
 plot(seq(0, 1, 0.01), mte.curve, type = 'l',
 	main = bquote('MTE curve without terms for'~X[i]^2), xlab = 'propensity score/unobserved gain from treatment',
 	ylab = 'treatment effect')
-segments(y0 = mean(ATE), y1 = mean(ATE), x0 = 0, x1 = 1, col = 'black', lty = 2)
-segments(y0 = mean(ATU), y1 = mean(ATU), x0 = 0 , x1 = max(propensity.score[D.i == 0])-0.01-0.01, col = 'red', lty = 2)
-segments(y0 = mean(ATT), y1 = mean(ATT), x0 = min(propensity.score[D.i == 1])+0.01+0.01, x1 = 1, col = 'blue', lty = 2)
-legend('top', legend = c('MTE curve', 'ATE', 'ATU', 'ATT'), lty = c(1, 2, 2, 2), col = c('black', 'black', 'red', 'blue'))
-abline(v = min(propensity.score[D.i == 1])+0.01, lty = 2)
-abline(v = max(propensity.score[D.i == 0])-0.01, lty = 2)
+segments(y0 = mean(ATE), y1 = mean(ATE), x0 = 0, x1 = 1, col = 'darkgreen', lty = 2)
+segments(y0 = mean(ATU), y1 = mean(ATU), x0 = 0 , x1 = max(matrix.p[matrix.D == 0]), col = 'red', lty = 2)
+segments(y0 = mean(ATT), y1 = mean(ATT), x0 = min(matrix.p[matrix.D == 1]), x1 = 1, col = 'blue', lty = 2)
+legend('top', legend = c('MTE curve', 'ATE', 'ATU', 'ATT'), lty = c(1, 2, 2, 2), col = c('black', 'darkgreen', 'red', 'blue'))
+abline(v = min(matrix.p[matrix.D == 1]), lty = 2)
+abline(v = max(matrix.p[matrix.D == 0]), lty = 2)
