@@ -1,4 +1,4 @@
-#	Set seed for reproducability.
+#	Set seed for reproducibility.
 set.seed(54)
 
 
@@ -90,19 +90,19 @@ for (i in 1:runs) {
 	pi.hat.2 <- mte.reg$coefficients['I(propensity.score^2)']
 	pi.hat.3 <- mte.reg$coefficients['I(propensity.score^3)']
 	
-	v <- seq(0, 1, 0.01)
+	u <- seq(0, 1, 0.01)
 	matrix.Xp <- beta.hat.1 * X.i + beta.hat.2 * X.i^2
-	matrix.Kp <- pi.hat.1 + 2 * pi.hat.2 * v + 3 * pi.hat.3 * v^2
+	matrix.Kp <- pi.hat.1 + 2 * pi.hat.2 * u + 3 * pi.hat.3 * u^2
 	matrix.mte <- outer(matrix.Xp, matrix.Kp, `+`)
 	
 	ATE.p <- rowMeans(matrix.mte, na.rm = TRUE)
 	ATE <- append(ATE, mean(ATE.p))
 	
-	weights.ATU <- outer(propensity.score, v, `>=`)
+	weights.ATU <- outer(propensity.score, u, `<`)
 	ATU.p <- rowSums(matrix.mte * weights.ATU, na.rm = TRUE) / rowSums(weights.ATU, na.rm = TRUE)
 	ATU <- append(ATU, mean(ATU.p[D.i == 0]))
 	
-	weights.ATT <- outer(propensity.score, v, `<`)
+	weights.ATT <- outer(propensity.score, u, `>=`)
 	ATT.p <- rowSums(matrix.mte * weights.ATT, na.rm = TRUE) / rowSums(weights.ATT, na.rm = TRUE)
 	ATT <- append(ATT, mean(ATT.p[D.i == 1]))
 	
@@ -115,7 +115,7 @@ for (i in 1:runs) {
 
 mte.curve <- rowMeans(mte.curves)
 plot(seq(0, 1, 0.01), mte.curve, type = 'l',
-	main = bquote('MTE curve with cubic term for'~K(p)), xlab = 'propensity score/unobserved gain from treatment',
+	main = bquote('MTE curve with cubic term for'~K(p)), xlab = bquote('unobserved resistance to treatment'~U[D]),
 	ylab = 'treatment effect', ylim = c(0.3, 1.6))
 segments(y0 = mean(ATE), y1 = mean(ATE), x0 = 0, x1 = 1, col = 'darkgreen', lty = 2)
 segments(y0 = mean(ATU), y1 = mean(ATU), x0 = 0 , x1 = max(matrix.p[matrix.D == 0]), col = 'red', lty = 2)
@@ -165,19 +165,19 @@ for (i in 1:runs) {
 	pi.hat.1 <- mte.reg$coefficients['propensity.score']
 	pi.hat.2 <- mte.reg$coefficients['I(propensity.score^2)']
 	
-	v <- seq(0, 1, 0.01)
+	u <- seq(0, 1, 0.01)
 	matrix.Xp <- beta.hat.1 * X.i + beta.hat.2 * X.i^2
-	matrix.Kp <- pi.hat.1 + 2 * pi.hat.2 * v
+	matrix.Kp <- pi.hat.1 + 2 * pi.hat.2 * u
 	matrix.mte <- outer(matrix.Xp, matrix.Kp, `+`)
 	
 	ATE.p <- rowMeans(matrix.mte, na.rm = TRUE)
 	ATE <- append(ATE, mean(ATE.p))
 	
-	weights.ATU <- outer(propensity.score, v, `>=`)
+	weights.ATU <- outer(propensity.score, u, `<`)
 	ATU.p <- rowSums(matrix.mte * weights.ATU, na.rm = TRUE) / rowSums(weights.ATU, na.rm = TRUE)
 	ATU <- append(ATU, mean(ATU.p[D.i == 0]))
 	
-	weights.ATT <- outer(propensity.score, v, `<`)
+	weights.ATT <- outer(propensity.score, u, `>=`)
 	ATT.p <- rowSums(matrix.mte * weights.ATT, na.rm = TRUE) / rowSums(weights.ATT, na.rm = TRUE)
 	ATT <- append(ATT, mean(ATT.p[D.i == 1]))
 	
@@ -190,7 +190,7 @@ for (i in 1:runs) {
 
 mte.curve <- rowMeans(mte.curves)
 plot(seq(0, 1, 0.01), mte.curve, type = 'l',
-	main = bquote('MTE curve with squared term for'~K(p)), xlab = 'propensity score/unobserved gain from treatment',
+	main = bquote('MTE curve with squared term for'~K(p)), xlab = bquote('unobserved resistance to treatment'~U[D]),
 	ylab = 'treatment effect', ylim = c(0.5, 0.65))
 segments(y0 = mean(ATE), y1 = mean(ATE), x0 = 0, x1 = 1, col = 'darkgreen', lty = 2)
 segments(y0 = mean(ATU), y1 = mean(ATU), x0 = 0 , x1 = max(matrix.p[matrix.D == 0]), col = 'red', lty = 2)
@@ -239,19 +239,19 @@ for (i in 1:runs) {
 	pi.hat.2 <- mte.reg$coefficients['I(propensity.score^2)']
 	pi.hat.3 <- mte.reg$coefficients['I(propensity.score^3)']
 	
-	v <- seq(0, 1, 0.01)
+	u <- seq(0, 1, 0.01)
 	matrix.Xp <- beta.hat.1 * X.i
-	matrix.Kp <- pi.hat.1 + 2 * pi.hat.2 * v + 3 * pi.hat.3 * v^2
+	matrix.Kp <- pi.hat.1 + 2 * pi.hat.2 * u + 3 * pi.hat.3 * u^2
 	matrix.mte <- outer(matrix.Xp, matrix.Kp, `+`)
 	
 	ATE.p <- rowMeans(matrix.mte, na.rm = TRUE)
 	ATE <- append(ATE, mean(ATE.p))
 	
-	weights.ATU <- outer(propensity.score, v, `>=`)
+	weights.ATU <- outer(propensity.score, u, `<`)
 	ATU.p <- rowSums(matrix.mte * weights.ATU, na.rm = TRUE) / rowSums(weights.ATU, na.rm = TRUE)
 	ATU <- append(ATU, mean(ATU.p[D.i == 0]))
 	
-	weights.ATT <- outer(propensity.score, v, `<`)
+	weights.ATT <- outer(propensity.score, u, `>=`)
 	ATT.p <- rowSums(matrix.mte * weights.ATT, na.rm = TRUE) / rowSums(weights.ATT, na.rm = TRUE)
 	ATT <- append(ATT, mean(ATT.p[D.i == 1]))
 	
@@ -264,7 +264,7 @@ for (i in 1:runs) {
 
 mte.curve.avg <- c()
 plot(seq(0, 1, 0.01), mte.curve, type = 'l',
-	main = bquote('MTE curve without terms for'~X[i]^2), xlab = 'propensity score/unobserved gain from treatment',
+	main = bquote('MTE curve without terms for'~X[i]^2), xlab = bquote('unobserved resistance to treatment'~U[D]),
 	ylab = 'treatment effect')
 segments(y0 = mean(ATE), y1 = mean(ATE), x0 = 0, x1 = 1, col = 'darkgreen', lty = 2)
 segments(y0 = mean(ATU), y1 = mean(ATU), x0 = 0 , x1 = max(matrix.p[matrix.D == 0]), col = 'red', lty = 2)
