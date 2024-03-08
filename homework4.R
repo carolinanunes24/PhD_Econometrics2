@@ -19,10 +19,18 @@ for (i in seq(30, 50, 1/3))
 	age.density <- append(age.density, nrow(data[data$age > j & data$age <= i,]))
 	j <- i
 }
-age.density <- age.density / sum(age.density)
+age.density[1] <- NA
+age.density <- age.density / sum(age.density, na.rm = TRUE)
 plot(seq(30, 50, 1/3), age.density,
-	xlab = "age at layof", ylab = "density", main = "density of age at layoff")
+	xlab = "age at layoff", ylab = "density", main = "density of age at layoff",
+	ylim = c(0, 0.02))
+abline(v = 40, lty = "dashed")
+
+
+
+
 
 bins <- cut(data$age, breaks = c(seq(30, 50, 1/3)))
 plot.bins.lwage0 <- aggregate(cbind(data$age, data$lwage0) ~ bins, FUN = mean)
 plot(plot.bins.lwage0$V1, plot.bins.lwage0$V2)
+abline(v = 40, lty = "dashed")
