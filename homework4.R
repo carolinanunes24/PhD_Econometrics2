@@ -26,11 +26,24 @@ plot(seq(30, 50, 1/3), age.density,
 	ylim = c(0, 0.02))
 abline(v = 40, lty = "dashed")
 
-
-
+reg.data <- data.frame("age" = seq(30, 50, 1/3), "density" = age.density)
+reg.pre <- lm(density ~ age + I(age^2), reg.data[reg.data$age <= 40,])
+reg.pre <- data.frame("age" = seq(30, 40, 1), "predict" = predict(reg.pre, data.frame("age" = seq(30, 40, 1))))
+reg.post <- lm(density ~ age + I(age^2), reg.data[reg.data$age >= 40,])
+reg.post <- data.frame("age" = seq(40, 50, 1), "predict" = predict(reg.post, data.frame("age" = seq(40, 50, 1))))
+lines(reg.pre$age, reg.pre$predict)
+lines(reg.post$age, reg.post$predict)
 
 
 bins <- cut(data$age, breaks = c(seq(30, 50, 1/3)))
 plot.bins.lwage0 <- aggregate(cbind(data$age, data$lwage0) ~ bins, FUN = mean)
-plot(plot.bins.lwage0$V1, plot.bins.lwage0$V2)
+plot(plot.bins.lwage0$V1, plot.bins.lwage0$V2,
+	xlab = "age at layoff", ylab = "log previous wage", main = "log previous wage against the age at layof")
 abline(v = 40, lty = "dashed")
+
+reg.pre <- lm(lwage0 ~ age + I(age^2), data[data$age <= 40,])
+reg.pre <- data.frame("age" = seq(30, 40, 1), "predict" = predict(reg.pre, data.frame("age" = seq(30, 40, 1))))
+reg.post <- lm(lwage0 ~ age + I(age^2), data[data$age >= 40,])
+reg.post <- data.frame("age" = seq(40, 50, 1), "predict" = predict(reg.post, data.frame("age" = seq(40, 50, 1))))
+lines(reg.pre$age, reg.pre$predict)
+lines(reg.post$age, reg.post$predict)
