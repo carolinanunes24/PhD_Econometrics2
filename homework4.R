@@ -28,7 +28,7 @@ for (i in seq(30, 50, 1/3))
 }
 age.density[1] <- NA
 age.density <- age.density / sum(age.density, na.rm = TRUE)
-plot(seq(30, 50, 1/3)+1/6, age.density,
+plot(seq(30, 50, 1/3)-1/6, age.density,
 	xlab = "Age at layoff", ylab = "Density", main = "Density of age at layoff",
 	ylim = c(0, 0.02))
 abline(v = 40, lty = "dashed")
