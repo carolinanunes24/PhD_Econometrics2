@@ -28,7 +28,7 @@ for (i in seq(30, 50, 1/3))
 }
 age.density[1] <- NA
 age.density <- age.density / sum(age.density, na.rm = TRUE)
-plot(seq(30, 50, 1/3), age.density,
+plot(seq(30, 50, 1/3)+1/6, age.density,
 	xlab = "Age at layoff", ylab = "Density", main = "Density of age at layoff",
 	ylim = c(0, 0.02))
 abline(v = 40, lty = "dashed")
@@ -75,7 +75,7 @@ lines(reg.post$age, reg.post$predict)
 
 
 plot(plot.bins.jobfind$V1, plot.bins.jobfind$V2,
-	xlab = "Age at layoff", ylab = "Probability of finding a job within 39 weeks", main = "Probability of finding a job within 39 weeks against the age at layof")
+	xlab = "Age at layoff", ylab = "Probability of finding a job within 39 weeks", main = "Probability of finding a job within 39 weeks against the age at layoff")
 abline(v = 40, lty = "dashed")
 reg.pre <- lm(jobfind ~ age.normalised + I(age.normalised^2), data[data$age <= 40,])
 reg.pre <- data.frame("age" = seq(30, 40, 1/3), "predict" = predict(reg.pre, data.frame("age.normalised" = seq(30, 40, 1/3)-40)))
