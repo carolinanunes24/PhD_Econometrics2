@@ -129,12 +129,21 @@ reg.1.jobfind.full <- summary(reg.1.jobfind); reg.2.jobfind.full <- summary(reg.
 
 
 #	Additional code.
-#	lwage1
 bins <- cut(data$age, breaks = c(seq(30, 50, 1/3)))
 plot.bins.lwage1 <- aggregate(cbind(data$age, data$lwage1) ~ bins, FUN = mean)
 
+bins <- cut(data$age, breaks = c(seq(30, 50, 1/3)))
+plot.bins.nonemp<- aggregate(cbind(data$age, data$nonemp) ~ bins, FUN = mean)
+
+bins <- cut(data$age, breaks = c(seq(30, 50, 1/3)))
+plot.bins.jobfind<- aggregate(cbind(data$age, data$jobfind) ~ bins, FUN = mean)
+
+
+#	lwage1.
+layout(matrix(c(1:5,0), ncol = 2, byrow = TRUE), widths = c(4,4), heights = c(3,3,3))
+
 plot(plot.bins.lwage1$V1, plot.bins.lwage1$V2,
-	xlab = "Age at layoff", ylab = "Log monthly wage in new job", main = "Log monthly wage in new job against the age at layoff")
+	xlab = "Age at layoff", ylab = "Log monthly wage in new job", main = "Regression 1")
 abline(v = 40, lty = "dashed")
 reg.1.lwage1.pre <- data.frame("age" = seq(30, 40, 1/3), "predict" = predict(reg.1.lwage1, data.frame("age.normalised" = seq(30, 40, 1/3)-40, "above40" = rep(0, 31)), interval = "confidence"))
 lines(reg.1.lwage1.pre$age, reg.1.lwage1.pre$predict.fit)
@@ -145,9 +154,8 @@ lines(reg.1.lwage1.post$age, reg.1.lwage1.post$predict.fit)
 lines(reg.1.lwage1.post$age, reg.1.lwage1.post$predict.lwr, lty = "dashed")
 lines(reg.1.lwage1.post$age, reg.1.lwage1.post$predict.upr, lty = "dashed")
 
-
 plot(plot.bins.lwage1$V1, plot.bins.lwage1$V2,
-	xlab = "Age at layoff", ylab = "Log monthly wage in new job", main = "Log monthly wage in new job against the age at layoff")
+	xlab = "Age at layoff", ylab = "Log monthly wage in new job", main = "Regression 2")
 abline(v = 40, lty = "dashed")
 reg.2.lwage1.pre <- data.frame("age" = seq(35, 40, 1/3), "predict" = predict(reg.2.lwage1, data.frame("age.normalised" = seq(35, 40, 1/3)-40, "above40" = rep(0, 16)), interval = "confidence"))
 lines(reg.2.lwage1.pre$age, reg.2.lwage1.pre$predict.fit)
@@ -158,9 +166,8 @@ lines(reg.2.lwage1.post$age, reg.2.lwage1.post$predict.fit)
 lines(reg.2.lwage1.post$age, reg.2.lwage1.post$predict.lwr, lty = "dashed")
 lines(reg.2.lwage1.post$age, reg.2.lwage1.post$predict.upr, lty = "dashed")
 
-
 plot(plot.bins.lwage1$V1, plot.bins.lwage1$V2,
-	xlab = "Age at layoff", ylab = "Log monthly wage in new job", main = "Log monthly wage in new job against the age at layoff")
+	xlab = "Age at layoff", ylab = "Log monthly wage in new job", main = "Regression 3")
 abline(v = 40, lty = "dashed")
 reg.3.lwage1.pre <- data.frame("age" = seq(30, 40, 1/3), "predict" = predict(reg.3.lwage1, data.frame("age.normalised" = seq(30, 40, 1/3)-40, "above40" = rep(0, 31)), interval = "confidence"))
 lines(reg.3.lwage1.pre$age, reg.3.lwage1.pre$predict.fit)
@@ -171,9 +178,8 @@ lines(reg.3.lwage1.post$age, reg.3.lwage1.post$predict.fit)
 lines(reg.3.lwage1.post$age, reg.3.lwage1.post$predict.lwr, lty = "dashed")
 lines(reg.3.lwage1.post$age, reg.3.lwage1.post$predict.upr, lty = "dashed")
 
-
 plot(plot.bins.lwage1$V1, plot.bins.lwage1$V2,
-	xlab = "Age at layoff", ylab = "Log monthly wage in new job", main = "Log monthly wage in new job against the age at layoff")
+	xlab = "Age at layoff", ylab = "Log monthly wage in new job", main = "Regression 4")
 abline(v = 40, lty = "dashed")
 reg.4.lwage1.pre <- data.frame("age" = seq(30, 40, 1/3), "predict" = predict(reg.4.lwage1, data.frame("age.normalised" = seq(30, 40, 1/3)-40, "above40" = rep(0, 31)), interval = "confidence"))
 lines(reg.4.lwage1.pre$age, reg.4.lwage1.pre$predict.fit)
@@ -184,9 +190,8 @@ lines(reg.4.lwage1.post$age, reg.4.lwage1.post$predict.fit)
 lines(reg.4.lwage1.post$age, reg.4.lwage1.post$predict.lwr, lty = "dashed")
 lines(reg.4.lwage1.post$age, reg.4.lwage1.post$predict.upr, lty = "dashed")
 
-
 plot(plot.bins.lwage1$V1, plot.bins.lwage1$V2,
-	xlab = "Age at layoff", ylab = "Log monthly wage in new job", main = "Log monthly wage in new job against the age at layoff")
+	xlab = "Age at layoff", ylab = "Log monthly wage in new job", main = "Regression 5")
 abline(v = 40, lty = "dashed")
 reg.5.lwage1.pre <- data.frame("age" = seq(40-optimal.bandwidth$bws[1], 40, 1/3), "predict" = predict(reg.5.lwage1, data.frame("age.normalised" = seq(40-optimal.bandwidth$bws[1], 40, 1/3)-40, "above40" = rep(0, length(seq(40-optimal.bandwidth$bws[1], 40, 1/3)))), interval = "confidence"))
 lines(reg.5.lwage1.pre$age, reg.5.lwage1.pre$predict.fit)
@@ -198,12 +203,11 @@ lines(reg.5.lwage1.post$age, reg.5.lwage1.post$predict.lwr, lty = "dashed")
 lines(reg.5.lwage1.post$age, reg.5.lwage1.post$predict.upr, lty = "dashed")
 
 
-#	nonemp
-bins <- cut(data$age, breaks = c(seq(30, 50, 1/3)))
-plot.bins.nonemp<- aggregate(cbind(data$age, data$nonemp) ~ bins, FUN = mean)
+#	nonemp.
+layout(matrix(c(1:5,0), ncol = 2, byrow = TRUE), widths = c(4,4), heights = c(3,3,3))
 
 plot(plot.bins.nonemp$V1, plot.bins.nonemp$V2,
-	xlab = "Age at layoff", ylab = "Non-employment duration in weeks", main = "Log monthly wage in new job against the age at layoff")
+	xlab = "Age at layoff", ylab = "Non-employment duration in weeks", main = "Regression 1")
 abline(v = 40, lty = "dashed")
 reg.1.nonemp.pre <- data.frame("age" = seq(30, 40, 1/3), "predict" = predict(reg.1.nonemp, data.frame("age.normalised" = seq(30, 40, 1/3)-40, "above40" = rep(0, 31)), interval = "confidence"))
 lines(reg.1.nonemp.pre$age, reg.1.nonemp.pre$predict.fit)
@@ -214,9 +218,8 @@ lines(reg.1.nonemp.post$age, reg.1.nonemp.post$predict.fit)
 lines(reg.1.nonemp.post$age, reg.1.nonemp.post$predict.lwr, lty = "dashed")
 lines(reg.1.nonemp.post$age, reg.1.nonemp.post$predict.upr, lty = "dashed")
 
-
 plot(plot.bins.nonemp$V1, plot.bins.nonemp$V2,
-	xlab = "Age at layoff", ylab = "Non-employment duration in weeks", main = "Log monthly wage in new job against the age at layoff")
+	xlab = "Age at layoff", ylab = "Non-employment duration in weeks", main = "Regression 2")
 abline(v = 40, lty = "dashed")
 reg.2.nonemp.pre <- data.frame("age" = seq(35, 40, 1/3), "predict" = predict(reg.2.nonemp, data.frame("age.normalised" = seq(35, 40, 1/3)-40, "above40" = rep(0, 16)), interval = "confidence"))
 lines(reg.2.nonemp.pre$age, reg.2.nonemp.pre$predict.fit)
@@ -227,9 +230,8 @@ lines(reg.2.nonemp.post$age, reg.2.nonemp.post$predict.fit)
 lines(reg.2.nonemp.post$age, reg.2.nonemp.post$predict.lwr, lty = "dashed")
 lines(reg.2.nonemp.post$age, reg.2.nonemp.post$predict.upr, lty = "dashed")
 
-
 plot(plot.bins.nonemp$V1, plot.bins.nonemp$V2,
-	xlab = "Age at layoff", ylab = "Non-employment duration in weeks", main = "Log monthly wage in new job against the age at layoff")
+	xlab = "Age at layoff", ylab = "Non-employment duration in weeks", main = "Regression 3")
 abline(v = 40, lty = "dashed")
 reg.3.nonemp.pre <- data.frame("age" = seq(30, 40, 1/3), "predict" = predict(reg.3.nonemp, data.frame("age.normalised" = seq(30, 40, 1/3)-40, "above40" = rep(0, 31)), interval = "confidence"))
 lines(reg.3.nonemp.pre$age, reg.3.nonemp.pre$predict.fit)
@@ -240,9 +242,8 @@ lines(reg.3.nonemp.post$age, reg.3.nonemp.post$predict.fit)
 lines(reg.3.nonemp.post$age, reg.3.nonemp.post$predict.lwr, lty = "dashed")
 lines(reg.3.nonemp.post$age, reg.3.nonemp.post$predict.upr, lty = "dashed")
 
-
 plot(plot.bins.nonemp$V1, plot.bins.nonemp$V2,
-	xlab = "Age at layoff", ylab = "Non-employment duration in weeks", main = "Log monthly wage in new job against the age at layoff")
+	xlab = "Age at layoff", ylab = "Non-employment duration in weeks", main = "Regression 4")
 abline(v = 40, lty = "dashed")
 reg.4.nonemp.pre <- data.frame("age" = seq(30, 40, 1/3), "predict" = predict(reg.4.nonemp, data.frame("age.normalised" = seq(30, 40, 1/3)-40, "above40" = rep(0, 31)), interval = "confidence"))
 lines(reg.4.nonemp.pre$age, reg.4.nonemp.pre$predict.fit)
@@ -253,9 +254,8 @@ lines(reg.4.nonemp.post$age, reg.4.nonemp.post$predict.fit)
 lines(reg.4.nonemp.post$age, reg.4.nonemp.post$predict.lwr, lty = "dashed")
 lines(reg.4.nonemp.post$age, reg.4.nonemp.post$predict.upr, lty = "dashed")
 
-
 plot(plot.bins.nonemp$V1, plot.bins.nonemp$V2,
-	xlab = "Age at layoff", ylab = "Non-employment duration in weeks", main = "Log monthly wage in new job against the age at layoff")
+	xlab = "Age at layoff", ylab = "Non-employment duration in weeks", main = "Regression 5")
 abline(v = 40, lty = "dashed")
 reg.5.nonemp.pre <- data.frame("age" = seq(40-optimal.bandwidth$bws[1], 40, 1/3), "predict" = predict(reg.5.nonemp, data.frame("age.normalised" = seq(40-optimal.bandwidth$bws[1], 40, 1/3)-40, "above40" = rep(0, length(seq(40-optimal.bandwidth$bws[1], 40, 1/3)))), interval = "confidence"))
 lines(reg.5.nonemp.pre$age, reg.5.nonemp.pre$predict.fit)
@@ -267,12 +267,11 @@ lines(reg.5.nonemp.post$age, reg.5.nonemp.post$predict.lwr, lty = "dashed")
 lines(reg.5.nonemp.post$age, reg.5.nonemp.post$predict.upr, lty = "dashed")
 
 
-#	jobfind
-bins <- cut(data$age, breaks = c(seq(30, 50, 1/3)))
-plot.bins.jobfind<- aggregate(cbind(data$age, data$jobfind) ~ bins, FUN = mean)
+#	jobfind.
+layout(matrix(c(1:5,0), ncol = 2, byrow = TRUE), widths = c(4,4), heights = c(3,3,3))
 
 plot(plot.bins.jobfind$V1, plot.bins.jobfind$V2,
-	xlab = "Age at layoff", ylab = "Probability person had a new job after 39 weeks", main = "Log monthly wage in new job against the age at layoff")
+	xlab = "Age at layoff", ylab = "Probability person had a new job after 39 weeks", main = "Regression 1")
 abline(v = 40, lty = "dashed")
 reg.1.jobfind.pre <- data.frame("age" = seq(30, 40, 1/3), "predict" = predict(reg.1.jobfind, data.frame("age.normalised" = seq(30, 40, 1/3)-40, "above40" = rep(0, 31)), interval = "confidence"))
 lines(reg.1.jobfind.pre$age, reg.1.jobfind.pre$predict.fit)
@@ -283,9 +282,8 @@ lines(reg.1.jobfind.post$age, reg.1.jobfind.post$predict.fit)
 lines(reg.1.jobfind.post$age, reg.1.jobfind.post$predict.lwr, lty = "dashed")
 lines(reg.1.jobfind.post$age, reg.1.jobfind.post$predict.upr, lty = "dashed")
 
-
 plot(plot.bins.jobfind$V1, plot.bins.jobfind$V2,
-	xlab = "Age at layoff", ylab = "Probability person had a new job after 39 weeks", main = "Log monthly wage in new job against the age at layoff")
+	xlab = "Age at layoff", ylab = "Probability person had a new job after 39 weeks", main = "Regression 2")
 abline(v = 40, lty = "dashed")
 reg.2.jobfind.pre <- data.frame("age" = seq(35, 40, 1/3), "predict" = predict(reg.2.jobfind, data.frame("age.normalised" = seq(35, 40, 1/3)-40, "above40" = rep(0, 16)), interval = "confidence"))
 lines(reg.2.jobfind.pre$age, reg.2.jobfind.pre$predict.fit)
@@ -296,9 +294,8 @@ lines(reg.2.jobfind.post$age, reg.2.jobfind.post$predict.fit)
 lines(reg.2.jobfind.post$age, reg.2.jobfind.post$predict.lwr, lty = "dashed")
 lines(reg.2.jobfind.post$age, reg.2.jobfind.post$predict.upr, lty = "dashed")
 
-
 plot(plot.bins.jobfind$V1, plot.bins.jobfind$V2,
-	xlab = "Age at layoff", ylab = "Probability person had a new job after 39 weeks", main = "Log monthly wage in new job against the age at layoff")
+	xlab = "Age at layoff", ylab = "Probability person had a new job after 39 weeks", main = "Regression 3")
 abline(v = 40, lty = "dashed")
 reg.3.jobfind.pre <- data.frame("age" = seq(30, 40, 1/3), "predict" = predict(reg.3.jobfind, data.frame("age.normalised" = seq(30, 40, 1/3)-40, "above40" = rep(0, 31)), interval = "confidence"))
 lines(reg.3.jobfind.pre$age, reg.3.jobfind.pre$predict.fit)
@@ -309,9 +306,8 @@ lines(reg.3.jobfind.post$age, reg.3.jobfind.post$predict.fit)
 lines(reg.3.jobfind.post$age, reg.3.jobfind.post$predict.lwr, lty = "dashed")
 lines(reg.3.jobfind.post$age, reg.3.jobfind.post$predict.upr, lty = "dashed")
 
-
 plot(plot.bins.jobfind$V1, plot.bins.jobfind$V2,
-	xlab = "Age at layoff", ylab = "Probability person had a new job after 39 weeks", main = "Log monthly wage in new job against the age at layoff")
+	xlab = "Age at layoff", ylab = "Probability person had a new job after 39 weeks", main = "Regression 4")
 abline(v = 40, lty = "dashed")
 reg.4.jobfind.pre <- data.frame("age" = seq(30, 40, 1/3), "predict" = predict(reg.4.jobfind, data.frame("age.normalised" = seq(30, 40, 1/3)-40, "above40" = rep(0, 31)), interval = "confidence"))
 lines(reg.4.jobfind.pre$age, reg.4.jobfind.pre$predict.fit)
@@ -322,9 +318,8 @@ lines(reg.4.jobfind.post$age, reg.4.jobfind.post$predict.fit)
 lines(reg.4.jobfind.post$age, reg.4.jobfind.post$predict.lwr, lty = "dashed")
 lines(reg.4.jobfind.post$age, reg.4.jobfind.post$predict.upr, lty = "dashed")
 
-
 plot(plot.bins.jobfind$V1, plot.bins.jobfind$V2,
-	xlab = "Age at layoff", ylab = "Probability person had a new job after 39 weeks", main = "Log monthly wage in new job against the age at layoff")
+	xlab = "Age at layoff", ylab = "Probability person had a new job after 39 weeks", main = "Regression 5")
 abline(v = 40, lty = "dashed")
 reg.5.jobfind.pre <- data.frame("age" = seq(40-optimal.bandwidth$bws[1], 40, 1/3), "predict" = predict(reg.5.jobfind, data.frame("age.normalised" = seq(40-optimal.bandwidth$bws[1], 40, 1/3)-40, "above40" = rep(0, length(seq(40-optimal.bandwidth$bws[1], 40, 1/3)))), interval = "confidence"))
 lines(reg.5.jobfind.pre$age, reg.5.jobfind.pre$predict.fit)
