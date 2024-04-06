@@ -90,8 +90,8 @@ rownames(reg.1.netpcm.moulton) <- c("year", "sic2", "regno")
 colnames(reg.1.lnavwage.moulton) <- c("lowwage", "post", "interaction")
 colnames(reg.1.netpcm.moulton) <- c("lowwage", "post", "interaction")
 
-reg.1.lnavwage.summary <- clustered.summary("reg.1.lnavwage", "sic2")
-reg.1.netpcm.summary <- clustered.summary("reg.1.netpcm", "sic2")
+reg.2.lnavwage.summary <- clustered.summary("reg.1.lnavwage", "regno")
+reg.2.netpcm.summary <- clustered.summary("reg.1.netpcm", "regno")
 
 
 #	Question 2.3
